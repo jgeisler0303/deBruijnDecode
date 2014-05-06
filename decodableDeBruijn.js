@@ -193,17 +193,8 @@ function decodeDeBruijn(w, c) {
   
   var v= operator_D(w, c);
   var i= n-r-1;
-  // console.log("decodeDeBruijn(w= " + w);
-  // console.log("v= " + v);
-  
-  // k= (c-1)*(c^(n-2)-1);
-  // if i==0
-  //   k= 2;
-  // end
   var k= K[n-r-1];
-  // console.log("k= " + k);
   var p= (c-1)*(Math.pow(c, n-1) - 1) + k;
-  // console.log("p= " + p);
   var allOnes= true;
   for(var i= 0; i<n-1; i++)
     if(v[i]!=1) allOnes= false;
@@ -211,23 +202,17 @@ function decodeDeBruijn(w, c) {
   var e;
   var j;
   if(allOnes) {
-    // console.log("allOnes");
     e= L[n-r-1][k] + Math.pow(c-1, 2);
-    // console.log("e= " + e);
     j= p + mod(w[0]-e, c);
   } else {
     var f= decodeDeBruijn(v, c);
-    // console.log("f= " + f);
     if(f>k) {
       f= f-1;
-      // console.log("f>k");
     }
 
     e= L[n-r-1][f];
-    // console.log("e= " + e);
     j= f + (Math.pow(c, n-1) - 1) * mod(e-w[0], c);
     if(j<0 || j>p-1) {
-      // console.log("j<0 || j>p-1");
       j= j+c;
     }
   }

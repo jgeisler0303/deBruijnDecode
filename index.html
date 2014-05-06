@@ -15,18 +15,34 @@
 
 <form name="deBruijn" onsubmit="update(); return false;">
 <table>
-  <tr><td><label for="c">Alphabet size:</label></td> <td><input type="text" value="3" name="c" id="c" ></td></tr>
-  <tr><td><label for="n">Word length:</label></td> <td><input type="text" name="n" id="n" value="2"></td></tr>
+  <tr><td><label for="c">Alphabet size (c):</label></td> <td><input type="text" value="3" name="c" id="c" ></td></tr>
+  <tr><td><label for="n">Word length (n):</label></td> <td><input type="text" name="n" id="n" value="2"></td></tr>
 </table>
 
 <input type="submit" value="Generate" />
+<input type="button" value="Test Decoder" onclick="test()"/>
 </form>
 
 <h2>Display Sequence</h2>
+<p>Sequence length <code id= deBruijnSeqLength>0</code>.</p>
 <div id= deBruijnSeqDigits style= "white-space:nowrap"></div>
 <p></p>
 <div id= deBruijnSeqColor style= "white-space:nowrap"></div>
-<h2>Decoder Test</h2>
+<h2>Decoder</h2>
+<h3>Decoder Static Data</h3>
+The decoder needs the following data that is computed once when the sequence is generated:
+<pre id= deBruijnDecoderData>
+</pre>
+<p>Total number of data bits (length(T)&middot;log<sub>2</sub>(c<sup>2</sup>) + length(K)&middot;log<sub>2</sub>(c<sup>n</sup>) + length(L)&middot;log<sub>2</sub>(c)): <code id= deBruijnDataUnits>0</code>.</p>
+
+<h3>Decoder Source Code</h3>
+<p>This the source code of the decoder run below.</p>
+<div style="overflow:auto; height:400px; width:80%">
+<script src="http://gist-it.appspot.com/github/jgeisler0303/deBruijnDecode/blob/gh-pages/decodableDeBruijn.js?footer=0&slice=177:221"></script>
+</div>
+Click <a href="https://github.com/jgeisler0303/deBruijnDecode/blob/gh-pages/decodableDeBruijn.js">here</a> to view the entire source code including the support functions.
+
+<h2 id= "decoderTest">Decoder Test</h2>
 <div id= deBruijnDecodeTest></div>
 
 <script type="text/javascript">

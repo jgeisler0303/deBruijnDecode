@@ -73,13 +73,13 @@ function getColorOrder(n) {
 function recalc() {
   var c_= parseInt(deBruijn.c.value, 10);
   var n_= parseInt(deBruijn.n.value, 10);
-  var maxSeqLen= Math.pow(2, 16);
+  var maxSeqLen= Math.pow(2, 12);
   
   if(isNaN(c_) || c_<2 || c_>8) {
     alert("The alphabet size should be between 2 and 8");
     return;
   }
-  if(isNaN(n_) || n_<2|| n_>8) {
+  if(isNaN(n_) || n_<2|| n_>12) {
     alert("The word length should be between 2 and 16");
     return;
   }
@@ -101,11 +101,15 @@ function recalc() {
   // console.log("K= " + K);
 }
 
-function testDecoder(viewContainer) {
+function clearDecoderTest(viewContainer) {
   var testTable= viewContainer.getElementsByTagName("table");
   while(testTable.length>0)
     viewContainer.removeChild(testTable[0]);
+}
 
+function testDecoder(viewContainer) {
+  clearDecoderTest(viewContainer);
+  
   testTable = document.createElement("table");
   var testRow;
   var testCell;
@@ -165,21 +169,56 @@ function testDecoder(viewContainer) {
     testRow.appendChild(testCell);
     testCell= document.createElement("td");
     testCell.style.textAlign= "center";
-    if(j==j_)
+    if(j==j_) {
+      testCell.style.color= "green";
       testCell.appendChild(document.createTextNode("\u2714"));
-    else
+    } else {
+      testCell.style.color= "red";
       testCell.appendChild(document.createTextNode("\u2718"));
+    }
     testRow.appendChild(testCell);
     testTable.appendChild(testRow);
   }
   viewContainer.appendChild(testTable);
 }
 
+function displayDecoderData(viewContainer, numberContainer) {
+  var data= viewContainer.getElementsByTagName("code");
+  while(data.length>0)
+    viewContainer.removeChild(data[0]);
+
+  data = document.createElement("code");
+  var lenL= 0;
+  for(var i= 0; i<L.length; i++) {
+    data.appendChild(document.createTextNode("L[" + i + "]= {" + L[i] + "};\n"));
+    lenL+= L[i].length;
+  }
+  data.appendChild(document.createTextNode("K= {" + K + "};\n"));
+  data.appendChild(document.createTextNode("T= {" + T + "};"));
+  
+  viewContainer.appendChild(data);
+  var dataBitsT= Math.log(Math.pow(c, 2))/Math.log(2) * T.length;
+  var dataBitsK= Math.log(Math.pow(c, n))/Math.log(2) * K.length;
+  var dataBitsL= Math.log(c)/Math.log(2) * lenL;
+  
+  numberContainer.replaceChild(document.createTextNode(dataBitsT+dataBitsK+dataBitsL), numberContainer.firstChild);
+}
+
 function update() {
   recalc();
+  var seqLenContainer= document.getElementById("deBruijnSeqLength");
+  seqLenContainer.replaceChild(document.createTextNode(Math.pow(c, n)), seqLenContainer.firstChild);
+  
   change(document.getElementById("deBruijnSeqDigits"), s);
   var colorOrder= getColorOrder(c);
   change(document.getElementById("deBruijnSeqColor"), s, colorOrder);
-  testDecoder(document.getElementById("deBruijnDecodeTest"));
+  displayDecoderData(document.getElementById("deBruijnDecoderData"), document.getElementById("deBruijnDataUnits"));
+  clearDecoderTest(document.getElementById("deBruijnDecodeTest"));
+  
+  return false;
 }
 
+function test() {
+  testDecoder(document.getElementById("deBruijnDecodeTest"));
+  location.hash= "decoderTest";
+}
