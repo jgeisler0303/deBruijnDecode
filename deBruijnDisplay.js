@@ -204,6 +204,42 @@ function displayDecoderData(viewContainer, numberContainer) {
   numberContainer.replaceChild(document.createTextNode(dataBitsT+dataBitsK+dataBitsL), numberContainer.firstChild);
 }
 
+function displayCDecoderData(viewContainer, numberContainer) {
+  var data= viewContainer.getElementsByTagName("code");
+  while(data.length>0)
+    viewContainer.removeChild(data[0]);
+
+  data = document.createElement("code");
+
+  data.appendChild(document.createTextNode("#define N " + n + "\n"));
+  data.appendChild(document.createTextNode("#define C " + c + "\n"));
+  data.appendChild(document.createTextNode("#define powC_2 " + ((c-1)*(c-1)) + "\n"));
+
+  var powC_N= Array();
+  for(var i= 2; i<=n; i++)
+    powC_N[i-2]= (c-1)*(Math.pow(c, i) - 1);
+  data.appendChild(document.createTextNode("const uint32_t powC_N[]= {" + powC_N + "};\n"));
+  data.appendChild(document.createTextNode("const uint8_t L[]= {" + L + "};\n"));
+  var idxL= Array();
+  idxL[0]= 0;
+  for(var i= 1; i<L.length; i++)
+    idxL[i]= idxL[i-1] + L[i-1].length;
+  data.appendChild(document.createTextNode("const uint16_t idxL[]= {" + idxL + "};\n"));
+  data.appendChild(document.createTextNode("const uint8_t T[]= {" + T + "};\n"));
+  viewContainer.appendChild(data);
+  
+
+  var lenL= 0;
+  for(var i= 0; i<L.length; i++) {
+    lenL+= L[i].length;
+  }  
+  var dataBitsT= Math.log(Math.pow(c, 2))/Math.log(2) * T.length;
+  var dataBitsK= Math.log(Math.pow(c, n))/Math.log(2) * K.length;
+  var dataBitsL= Math.log(c)/Math.log(2) * lenL;
+  
+  numberContainer.replaceChild(document.createTextNode(dataBitsT+dataBitsK+dataBitsL), numberContainer.firstChild);
+}
+
 function update() {
   recalc();
   var seqLenContainer= document.getElementById("deBruijnSeqLength");
@@ -213,6 +249,20 @@ function update() {
   var colorOrder= getColorOrder(c);
   change(document.getElementById("deBruijnSeqColor"), s, colorOrder);
   displayDecoderData(document.getElementById("deBruijnDecoderData"), document.getElementById("deBruijnDataUnits"));
+  clearDecoderTest(document.getElementById("deBruijnDecodeTest"));
+  
+  return false;
+}
+
+function updateC() {
+  recalc();
+  var seqLenContainer= document.getElementById("deBruijnSeqLength");
+  seqLenContainer.replaceChild(document.createTextNode(Math.pow(c, n)), seqLenContainer.firstChild);
+  
+  change(document.getElementById("deBruijnSeqDigits"), s);
+  var colorOrder= getColorOrder(c);
+  change(document.getElementById("deBruijnSeqColor"), s, colorOrder);
+  displayCDecoderData(document.getElementById("deBruijnDecoderData"), document.getElementById("deBruijnDataUnits"));
   clearDecoderTest(document.getElementById("deBruijnDecodeTest"));
   
   return false;
