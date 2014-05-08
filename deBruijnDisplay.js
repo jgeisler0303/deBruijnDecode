@@ -226,6 +226,19 @@ function displayCDecoderData(viewContainer, numberContainer) {
     idxL[i]= idxL[i-1] + L[i-1].length;
   data.appendChild(document.createTextNode("const uint16_t idxL[]= {" + idxL + "};\n"));
   data.appendChild(document.createTextNode("const uint8_t T[]= {" + T + "};\n"));
+
+  var w= new Array(n);
+  var locBD= new Array(Math.pow(c, n));
+  for(var i= 0; i<Math.pow(c, n); i++) {
+    var i_= i;
+    for(j= n-1; j>=0; j--) {
+	w[j]= i_%c;
+	i_= Math.floor(i_/c);
+	locBD[i]= decodeDeBruijn(w, c);
+    }
+  }
+  data.appendChild(document.createTextNode("const uint32_t locDB[]= {" + locBD + "};\n"));
+  
   viewContainer.appendChild(data);
   
 
